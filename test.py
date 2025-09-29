@@ -23,6 +23,8 @@ test_loader = util.wrap_as_dataloader(test_data, 2, util.GPT_CONFIG_124M["contex
 # for x,y in test_loader:
 #     print(x.shape, y.shape)
 
+torch.autograd.set_detect_anomaly(True)
+
 model = GPTModel.GPTModel(util.GPT_CONFIG_124M)
 # with torch.no_grad():
 #     train_loss = util.calc_loss_loader(model, train_loader)

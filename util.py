@@ -50,8 +50,11 @@ def wrap_as_dataloader(dataset, batch_size, max_len, stride, drop_last, shuffle)
     return dl
 
 def calc_loss_batch(model, inputs, targets):
+
     logits = model(inputs)
+
     loss = torch.nn.functional.cross_entropy(logits.flatten(0, 1), targets.flatten())
+    print("loss is ", loss)
     return loss
 
 def calc_loss_loader(model, loader, num_batches=None):

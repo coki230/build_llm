@@ -15,16 +15,22 @@ class GPTModel(nn.Module):
         self.out_head = nn.Linear(cfg["emb_dim"], cfg["vocab_size"])
 
     def forward(self, inputs):
+        print(inputs.shape)
         batch_size, seq_len = inputs.shape
         tok_embeds = self.tok_emb(inputs)
 
         pos_embeds = self.pos_emb(torch.arange(seq_len, device=inputs.device))
 
+
+
+
         tok_and_ops = tok_embeds + pos_embeds
         tok_and_ops = self.drop_emb(tok_and_ops)
         tok_and_ops = self.trf_blocks(tok_and_ops)
         tok_and_ops = self.final_norm(tok_and_ops)
+
         logits = self.out_head(tok_and_ops)
+
         return logits
 
 def generate_text_simple(model, idx, max_new_tokens, context_size):

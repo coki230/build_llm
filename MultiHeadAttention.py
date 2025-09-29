@@ -39,25 +39,16 @@ class MultiHeadAttention(torch.nn.Module):
         attn_scores = query @ key.transpose(2, 3)
         mask_bool = self.mask.bool()[:num_tokens, :num_tokens]
 
-        attn_scores.masked_fill_(mask_bool, -torch.inf)
+        attn_scores.masked_fill_(mask_bool, -1e9)
 
-
-        print("attn_scores", torch.isnan(attn_scores).any(), torch.isinf(attn_scores).any())
-        print(attn_scores.min(), attn_scores.max())
 
         attn_weights = torch.nn.functional.softmax(attn_scores / key.shape[-1] ** 0.5, dim=-1)
         attn_weights = self.dropout(attn_weights)
 
 
-
-        print("attn_weights", torch.isnan(attn_weights).any(), torch.isinf(attn_weights).any())
-        print(attn_weights.min(), attn_weights.max())
-
         context_vec = (attn_weights @ value).transpose(1, 2)
         context_vec = context_vec.contiguous().view(b, num_tokens, self.d_out)
 
-        print("context_vec", torch.isnan(context_vec).any(), torch.isinf(context_vec).any())
-        print(context_vec.min(), context_vec.max())
         output = self.last_Layer(context_vec)
         return output
 

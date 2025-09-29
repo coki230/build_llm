@@ -54,7 +54,6 @@ def calc_loss_batch(model, inputs, targets):
     logits = model(inputs)
 
     loss = torch.nn.functional.cross_entropy(logits.flatten(0, 1), targets.flatten())
-    print("loss is ", loss)
     return loss
 
 def calc_loss_loader(model, loader, num_batches=None):
@@ -111,7 +110,6 @@ def generate_and_print_sample(model, start_context, tokenizer):
     with torch.no_grad():
         token_ids = generate_text_simple(model, encoded, 50, context_size)
         decoded_text = token_ids_to_text(token_ids, tokenizer)
-        print(decoded_text)
     model.train()
 
 def test():

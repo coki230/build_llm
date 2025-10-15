@@ -17,3 +17,6 @@ class SelfAttention_v1(nn.Module):
         attention_weights = torch.softmax(attention_scores ** 0.5, dim=-1)
         context_vector = attention_weights @ values
         return context_vector
+
+    def get_parameter(self):
+        return self.W_query, self.W_key, self.W_value

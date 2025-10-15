@@ -4,6 +4,7 @@ import SelfAttention_v1
 import SelfAttention_v2
 import numpy as np
 import CausalAttention as ca
+import MultiHeadAttentionWrapper as mw
 
 # tokenizer = tiktoken.encoding_for_model("gpt2")
 #
@@ -69,11 +70,29 @@ import CausalAttention as ca
 
 
 #------------------------------------
+# demo for torch cat
+#------------------------------------
+# a = torch.arange(1, 7).reshape((2, 3))
+# b = torch.arange(1, 7).reshape((2, 3))
+# c = torch.cat((a, b), dim=-1)
+# print(c)
+
+
+#------------------------------------
 # demo for CasalAttention test
 #------------------------------------
+# input = torch.rand((2, 6, 3 )).type(torch.float)
+# print(input)
+# c_a = ca.CausalAttention(3, 2, 6, 0.0)
+# print(input.shape)
+# context_vector = c_a(input)
+# print(context_vector)
+
+
+#------------------------------------
+# demo for MultiHeadAttentionWrapper test
+#------------------------------------
+
 input = torch.rand((2, 6, 3 )).type(torch.float)
-print(input)
-c_a = ca.CausalAttention(3, 2, 6, 0.0)
-print(input.shape)
-context_vector = c_a(input)
-print(context_vector)
+model = mw.MultiHeadAttentionWrapper(3, 2, 6, 0.0, 2)
+print(model(input))

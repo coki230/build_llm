@@ -19,7 +19,7 @@ class MultiHeadAttention(torch.nn.Module):
         self.last_Layer = torch.nn.Linear(d_out, d_out)
         self.dropout = torch.nn.Dropout(dropout)
         self.register_buffer('mask',
-                             torch.tril(torch.ones(context_length, context_length), diagonal=1))
+                             torch.triu(torch.ones(context_length, context_length), diagonal=1))
 
 
     def forward(self, inputs):

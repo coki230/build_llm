@@ -5,6 +5,7 @@ import SelfAttention_v2
 import numpy as np
 import CausalAttention as ca
 import MultiHeadAttentionWrapper as mw
+import GPTModel as gpt
 
 # tokenizer = tiktoken.encoding_for_model("gpt2")
 #
@@ -92,7 +93,42 @@ import MultiHeadAttentionWrapper as mw
 #------------------------------------
 # demo for MultiHeadAttentionWrapper test
 #------------------------------------
+#
+# input = torch.rand((2, 6, 3 )).type(torch.float)
+# model = mw.MultiHeadAttentionWrapper(3, 2, 6, 0.0, 6)
+# output = model(input)
+# print(output.shape, output)
 
-input = torch.rand((2, 6, 3 )).type(torch.float)
-model = mw.MultiHeadAttentionWrapper(3, 2, 6, 0.0, 2)
-print(model(input))
+
+#------------------------------------
+# demo for GPTModel test
+#------------------------------------
+
+GPT_CONFIG_124M = {
+    "vocab_size": 50257,
+    "context_length": 1024,
+    "emb_dim": 768,
+    "n_layer": 12,
+    "n_head": 12,
+    "drop_rate": 0.1,
+    "qkv_bias": False
+}
+model = gpt.GPTModel(GPT_CONFIG_124M)
+
+# input = torch.randint(0, 10, (2, 1024), dtype=torch.long)
+# out = model(input)
+# print(input.shape)
+# print(out.shape)
+# p_sum = sum(p.numel() for p in model.parameters())
+# print(p_sum)
+
+start_context = "Hello, I am"
+tokenizer = tiktoken.encoding_for_model("gpt2")
+encoded = tokenizer.encode(start_context)
+print(encoded)
+encoded_tensor = torch.tensor(encoded).unsqueeze(0)
+print(encoded_tensor)
+model.eval()
+out = gpt.generate_text_simple(model, encoded_tensor, 6, 1024)
+print(out)
+print(len(out[0]))

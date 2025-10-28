@@ -14,7 +14,7 @@ class GptDatasetV1(Dataset):
         # print(self.token_ids[:10])
         for i in range(0, len(self.token_ids) - max_len, stride_len):
             self.input_ids.append(torch.tensor(self.token_ids[i:i+max_len]))
-            self.target_ids.append(torch.tensor(self.token_ids[i+stride_len:i+max_len+stride_len]))
+            self.target_ids.append(torch.tensor(self.token_ids[i+1:i+max_len+1]))
 
     def __len__(self):
         return len(self.input_ids)

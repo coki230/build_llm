@@ -3,11 +3,12 @@ from torch.utils.data import Dataset
 import tiktoken
 
 class GptDatasetV1(Dataset):
-    def __init__(self, file_path, max_len, stride_len):
-        f = open(file_path, "r")
-        all_text = f.read()
+    def __init__(self, text, max_len, stride_len):
+        # in the next section I need split train and test dataset, so here need chang to accept data
+        # f = open(file_path, "r")
+        # all_text = f.read()
         self.token_encoder = tiktoken.get_encoding("gpt2")
-        self.token_ids = self.token_encoder.encode(all_text)
+        self.token_ids = self.token_encoder.encode(text)
         self.input_ids = []
         self.target_ids = []
 

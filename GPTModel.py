@@ -15,6 +15,7 @@ class GPTModel(nn.Module):
 
     def forward(self, inputs):
         batch_size, seq_len = inputs.shape
+        print(inputs.shape)
         tok_embeds = self.tok_emb(inputs)
         pos_embeds = self.pos_emb(torch.arange(seq_len, device=inputs.device))
 
@@ -37,3 +38,6 @@ def generate_text_simple(model, idx, max_new_tokens, context_size):
         idx_next = torch.argmax(probas, dim=-1, keepdim=True)
         idx = torch.cat((idx, idx_next), dim=1)
     return idx
+
+def calculate_loss(result, target):
+    return torch.nn.functional.cross_entropy(result.flatten(0, 1), target.flatten())

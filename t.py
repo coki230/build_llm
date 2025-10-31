@@ -1,7 +1,7 @@
 import torch
 
-a = torch.arange(1, 16)
-a = a.reshape(1, 3, 5)
-print(a)
-b = a[0, [0, 1], [2, 3]]
+a = torch.arange(0, 1, 0.01)
+b = torch.multinomial(a, 1)
+c = torch.topk(a, 2)
 print(b)
+print(c)

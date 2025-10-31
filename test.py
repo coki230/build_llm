@@ -138,32 +138,51 @@ import GPTModel as gpt
 #------------------------------------
 # demo for GPTModel test2
 #------------------------------------
+#
+# GPT_CONFIG_124M = {
+#     "vocab_size": 50257,
+#     "context_length": 1024,
+#     "emb_dim": 768,
+#     "n_layer": 12,
+#     "n_head": 12,
+#     "drop_rate": 0.1,
+#     "qkv_bias": False
+# }
+# model = gpt.GPTModel(GPT_CONFIG_124M)
+# inputs = torch.tensor([[16833, 3626, 6100],[40, 1107, 588]])
+# targets = torch.tensor([[3626, 6100, 345 ], [107, 588, 11311]])
+#
+# with torch.no_grad():
+#     outputs = model(inputs)
+# probas = torch.nn.functional.softmax(outputs, dim=-1)
+# print(probas.shape)
+# target_probas_1 = probas[0, [0, 1, 2], targets[0]]
+# print(target_probas_1)
+# target_probas_2 = probas[1, [0, 1, 2], targets[1]]
+# print(target_probas_2)
+# target_probas = torch.cat([target_probas_1, target_probas_2], dim=-1)
+# print(target_probas)
+# log_probas = torch.log(target_probas)
+# loss = -log_probas.mean()
+# print(loss)
+# cross_entropy = torch.nn.functional.cross_entropy(outputs.flatten(0, 1), targets.flatten())
+# print(cross_entropy)
 
-GPT_CONFIG_124M = {
-    "vocab_size": 50257,
-    "context_length": 1024,
-    "emb_dim": 768,
-    "n_layer": 12,
-    "n_head": 12,
-    "drop_rate": 0.1,
-    "qkv_bias": False
-}
-model = gpt.GPTModel(GPT_CONFIG_124M)
-inputs = torch.tensor([[16833, 3626, 6100],[40, 1107, 588]])
-targets = torch.tensor([[3626, 6100, 345 ], [107, 588, 11311]])
 
-with torch.no_grad():
-    outputs = model(inputs)
-probas = torch.nn.functional.softmax(outputs, dim=-1)
-print(probas.shape)
-target_probas_1 = probas[0, [0, 1, 2], targets[0]]
-print(target_probas_1)
-target_probas_2 = probas[1, [0, 1, 2], targets[1]]
-print(target_probas_2)
-target_probas = torch.cat([target_probas_1, target_probas_2], dim=-1)
-print(target_probas)
-log_probas = torch.log(target_probas)
-loss = -log_probas.mean()
-print(loss)
-cross_entropy = torch.nn.functional.cross_entropy(outputs.flatten(0, 1), targets.flatten())
-print(cross_entropy)
+#------------------------------------
+# download gpt config
+#------------------------------------
+# import urllib.request
+# url = (
+# "https://raw.githubusercontent.com/rasbt/"
+# "LLMs-from-scratch/main/ch05/"
+# "01_main-chapter-code/gpt_download.py"
+# )
+# filename = url.split('/')[-1]
+# print(url, filename)
+# urllib.request.urlretrieve(url, filename)
+
+from gpt_download import download_and_load_gpt2
+settings, params = download_and_load_gpt2(model_size="124M", models_dir="gpt2")
+print(settings)
+print(params.keys())

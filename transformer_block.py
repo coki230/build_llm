@@ -1,13 +1,14 @@
 import torch
 import torch.nn as nn
 
-from MultiHeadAttention import MultiHeadAttention
-from MultiHeadAttention import FeedForward
+from multi_head_attention import MultiHeadAttention
+from multi_head_attention import FeedForward
+from layer_norm import LayerNorm
 
 
 
 class TransformerBlock(nn.Module):
-    def __init__(self, cfg):
+    def  __init__(self, cfg):
         super().__init__()
         self.att = MultiHeadAttention(cfg["emb_dim"], cfg["emb_dim"],
                                      context_length=cfg["context_length"],
@@ -15,8 +16,8 @@ class TransformerBlock(nn.Module):
                                       dropout=cfg["drop_rate"],
                                       qkv_bias=cfg["qkv_bias"])
         self.ff = FeedForward(cfg)
-        self.norm1 = nn.LayerNorm(cfg["emb_dim"])
-        self.norm2 = nn.LayerNorm(cfg["emb_dim"])
+        self.norm1 = LayerNorm(cfg["emb_dim"])
+        self.norm2 = LayerNorm(cfg["emb_dim"])
         self.drop_shortcut = nn.Dropout(cfg["drop_rate"])
 
     def forward(self, x):
@@ -40,7 +41,7 @@ class TransformerBlock(nn.Module):
 #     "vocab_size": 50257,
 #     "context_length": 1024,
 #     "emb_dim": 768,
-#     "n_layer": 12,
+#     "n_layers": 12,
 #     "n_head": 12,
 #     "drop_rate": 0.1,
 #     "qkv_bias": False

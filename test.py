@@ -1,11 +1,11 @@
 import tiktoken
 import torch
-import SelfAttention_v1
-import SelfAttention_v2
+import self_attention_v1
+import self_attention_v2
 import numpy as np
-import CausalAttention as ca
-import MultiHeadAttentionWrapper as mw
-import GPTModel as gpt
+import causal_attention as ca
+import multi_head_attention_wrapper as mw
+import GPT_model as gpt
 
 # tokenizer = tiktoken.encoding_for_model("gpt2")
 #
@@ -108,7 +108,7 @@ import GPTModel as gpt
 #     "vocab_size": 50257,
 #     "context_length": 1024,
 #     "emb_dim": 768,
-#     "n_layer": 12,
+#     "n_layers": 12,
 #     "n_head": 12,
 #     "drop_rate": 0.1,
 #     "qkv_bias": False
@@ -143,7 +143,7 @@ import GPTModel as gpt
 #     "vocab_size": 50257,
 #     "context_length": 1024,
 #     "emb_dim": 768,
-#     "n_layer": 12,
+#     "n_layers": 12,
 #     "n_head": 12,
 #     "drop_rate": 0.1,
 #     "qkv_bias": False

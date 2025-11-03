@@ -1,5 +1,5 @@
 import torch
-import CausalAttention as ca
+import causal_attention as ca
 class MultiHeadAttentionWrapper(torch.nn.Module):
     def __init__(self, d_in, d_out, context_length, dropout, head_num):
         super().__init__()

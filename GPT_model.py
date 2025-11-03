@@ -1,6 +1,7 @@
 import torch.nn as nn
-from TransformerBlock import TransformerBlock
+from transformer_block import TransformerBlock
 import torch
+from layer_norm import LayerNorm
 
 class GPTModel(nn.Module):
     def __init__(self, cfg):
@@ -9,8 +10,8 @@ class GPTModel(nn.Module):
         self.pos_emb = nn.Embedding(cfg["context_length"], cfg["emb_dim"])
         self.drop_emb = nn.Dropout(cfg["drop_rate"])
 
-        self.trf_blocks = nn.Sequential(*[TransformerBlock(cfg) for _ in range(cfg["n_layer"])])
-        self.final_norm = nn.LayerNorm(cfg["emb_dim"])
+        self.trf_blocks = nn.Sequential(*[TransformerBlock(cfg) for _ in range(cfg["n_layers"])])
+        self.final_norm = LayerNorm(cfg["emb_dim"])
         self.out_head = nn.Linear(cfg["emb_dim"], cfg["vocab_size"])
 
     def forward(self, inputs):

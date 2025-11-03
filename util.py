@@ -1,14 +1,14 @@
 import tiktoken
-from GPTModel import generate_text_simple
+from GPT_model import generate_text_simple
 import torch
-import GPTModel
-
+import GPT_model
+import numpy as np
 
 GPT_CONFIG_124M = {
     "vocab_size": 50257,
     "context_length": 256,
     "emb_dim": 768,
-    "n_layer": 1,
+    "n_layers": 1,
     "n_head": 12,
     "drop_rate": 0.1,
     "stride": 1,
@@ -111,6 +111,58 @@ def generate_and_print_sample(model, start_context, tokenizer):
         token_ids = generate_text_simple(model, encoded, 50, context_size)
         decoded_text = token_ids_to_text(token_ids, tokenizer)
     model.train()
+
+def assign(left, right):
+    if left.shape != right.shape:
+        raise ValueError("Shape of left and right must be equal ", left.shape, "--", right.shape)
+    return torch.nn.Parameter(torch.tensor(right))
+
+def load_weights_into_gpt(model, params):
+    model.pos_emb.weight = assign(model.pos_emb.weight, params["wpe"])
+    model.tok_emb.weight = assign(model.tok_emb.weight, params["wte"])
+
+    for b in range(len(params["blocks"])):
+        q_w, k_w, v_w = np.split((params["blocks"][b]["attn"]["c_attn"])["w"], 3, axis=-1)
+        model.trf_blocks[b].att.W_query.weight = assign(model.trf_blocks[b].att.W_query.weight, q_w.T)
+        model.trf_blocks[b].att.W_key.weight = assign(model.trf_blocks[b].att.W_key.weight, k_w.T)
+        model.trf_blocks[b].att.W_value.weight = assign(model.trf_blocks[b].att.W_value.weight, v_w.T)
+
+        q_b, k_b, k_b = np.split((params["blocks"][b]["attn"]["c_attn"])["b"], 3, axis=-1)
+        model.trf_blocks[b].att.W_query.bias = assign(model.trf_blocks[b].att.W_query.bias, q_b.T)
+        model.trf_blocks[b].att.W_key.bias = assign(model.trf_blocks[b].att.W_key.bias, k_b.T)
+        model.trf_blocks[b].att.W_value.bias = assign(model.trf_blocks[b].att.W_value.bias, k_b.T)
+
+        model.trf_blocks[b].att.last_Layer.weight = assign(model.trf_blocks[b].att.last_Layer.weight,
+                                                         params["blocks"][b]["attn"]["c_proj"]["w"].T)
+        model.trf_blocks[b].att.last_Layer.bias = assign(model.trf_blocks[b].att.last_Layer.bias,
+                                                         params["blocks"][b]["attn"]["c_proj"]["b"])
+
+        model.trf_blocks[b].ff.layers[0].weight = assign(model.trf_blocks[b].ff.layers[0].weight,
+                                                         params["blocks"][b]["mlp"]["c_fc"]["w"].T)
+        model.trf_blocks[b].ff.layers[0].bias = assign(model.trf_blocks[b].ff.layers[0].bias,
+                                                         params["blocks"][b]["mlp"]["c_fc"]["b"])
+
+        model.trf_blocks[b].ff.layers[2].weight = assign(model.trf_blocks[b].ff.layers[2].weight,
+                                                         params["blocks"][b]["mlp"]["c_proj"]["w"].T)
+        model.trf_blocks[b].ff.layers[2].bias = assign(model.trf_blocks[b].ff.layers[2].bias,
+                                                         params["blocks"][b]["mlp"]["c_proj"]["b"])
+
+
+        model.trf_blocks[b].norm1.scale = assign(model.trf_blocks[b].norm1.scale,
+                                                         params["blocks"][b]["ln_1"]["g"])
+        model.trf_blocks[b].norm1.shift = assign(model.trf_blocks[b].norm1.shift,
+                                                         params["blocks"][b]["ln_1"]["b"])
+        model.trf_blocks[b].norm2.scale = assign(model.trf_blocks[b].norm2.scale,
+                                                         params["blocks"][b]["ln_2"]["g"])
+        model.trf_blocks[b].norm2.shift = assign(model.trf_blocks[b].norm2.shift,
+                                                         params["blocks"][b]["ln_2"]["b"])
+
+        model.final_norm.scale = assign(model.final_norm.scale, params["g"])
+        model.final_norm.shift = assign(model.final_norm.scale, params["b"])
+        model.out_head.weight = assign(model.out_head.weight, params["wte"])
+
+
+    return model
 
 def test():
     model = GPTModel.GPTModel(GPT_CONFIG_124M)

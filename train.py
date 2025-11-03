@@ -1,7 +1,7 @@
-import gptDatasetV1 as gd
+import gpt_dataset_v1 as gd
 import torch
 import util as ut
-import GPTModel as gpt
+import GPT_model as gpt
 import tiktoken
 
 
@@ -28,7 +28,7 @@ import tiktoken
 #     "vocab_size": 50257,
 #     "context_length": 1024,
 #     "emb_dim": 768,
-#     "n_layer": 12,
+#     "n_layers": 12,
 #     "n_head": 12,
 #     "drop_rate": 0.1,
 #     "qkv_bias": False
@@ -69,7 +69,7 @@ GPT_CONFIG_124M = {
     "vocab_size": 50257,
     "context_length": 1024,
     "emb_dim": 768,
-    "n_layer": 12,
+    "n_layers": 12,
     "n_head": 12,
     "drop_rate": 0.1,
     "qkv_bias": False

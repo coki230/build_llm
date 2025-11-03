@@ -1,6 +1,6 @@
 import torch
 import tiktoken
-import gptDatasetV1
+import gpt_dataset_v1
 
 
 
